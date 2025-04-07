@@ -1,0 +1,61 @@
+Q1.
+
+Dans les blocs 4 et 5, le type déclaré de la variable est référence
+(respectivement pointeur) sur Biscuit mais le type réel de l'objet référencé
+(respectivement pointé) est BiscuitFourre. Lorsque l'on appelle une méthode non
+virtuelle, on utilise la méthode du type déclaré (on parle d'attachement
+statique) et lorsqu'on appelle une méthode virtuelle, on utilise la méthode du
+type réel (on parle d'attachement dynamique).
+
+
+Q2.
+
+Dans le bloc 6, le type réel et le type déclaré de la variable b4 est Biscuit.
+Même si la variable est initialisée à partir d'un BiscuitFourre, c'est une
+instance de Biscuit, ce qui fait de b3 un BiscuitFourre (l'attribut m_fourrage)
+a juste été tronqué pour ne garder que les attributs de la classe Biscuit.
+
+
+Q3.
+
+Biscuit b : construit ligne 10, détruit ligne 40
+BiscuitFourre b2 : construit ligne 14, détruit ligne 40
+BiscuitFourre b3 : construit ligne 18, détruit ligne 40
+Biscuit b4 : construit ligne 36, détruit ligne 40
+
+
+Q4.
+
+Ce programme crashe (ou affiche n'importe quoi). Le problème est que le
+BiscuitFourre b3 construit à la ligne 10 dans la fonction reference() est
+détruit à la fin de la fonction ligne 16. Mais une reference de type Biscuit&
+est construit dessus ligne 13 et retournée à la fonction main. Cette référence
+est récupérée ligne 21 puis utilisé ligne 22. À ce point du programme, l'objet
+référencé est déjà détruit, d'où le crash : on utilise de la mémoire déjà
+désallouée. Dans la norme du C++, en anglais, on parle de "dangling reference"
+pour décrire l'état de ref ligne 21. C'est un peu comme si b était un yoyo, ref
+la ficelle et qu'en retournant de la fonction (donc en détruisant b) on avait
+coupé le yoyo et gardé la ficelle...
+
+
+Q5.
+
+Si on se contente de remplacer la référence par un pointeur, on ne résout rien
+du tout. On a exactement le même problème, on se retrouve à déréférencer un
+pointeur pointant vers un objet déjà détruit et de la mémoire déjà désallouée.
+
+
+Q6.
+
+Cette fois, on contrôle manuellement la durée de vie des objets, on peut donc
+faire en sorte que le BiscuitFourre b3 reste en vie le temps qu'on s'en serve.
+Pour ne pas avoir de fuite mémoire, il faut désallouer l'objet avec delete dès
+qu'on en a plus besoin, après la ligne 22 de la fonction main().
+
+
+Q7.
+
+L'allocation dynamique est incompatible avec l'emploi de références. C'est la
+contrepartie des références : elles ont une syntaxe plus légère que les
+pointeurs mais elles doivent être initialisées dès leur construction et ne
+peuvent pas être réassignés.
