@@ -1,131 +1,124 @@
-#include <iostream>
-#include <cmath>
+#include <iostream> // entrées-sorties
+#include <string> // manipulation des chaînes de caractères
+#include <chrono> // manipulation des dates et heures
+#include <iomanip> // affichage des dates et heures
+#include <ctime> // affichage des dates et heures
 
-#include "ReleveQuotidien.h"
+#include "Note.h" // si vous avez appelé votre fichier différemment, changez cet include !
+#include "Categorie.h"
+#include "Email.h"
+#include "Photo.h"
 
-float TEMPERATURES[] =
-{
-	// 1er janvier (de 00h à 23h UTC)
-	-0.7, -1.7, -2.5, -2.7, -3.1, -2.7, -2.5, -2.8, -2.6, -1.8, -2.1, -1.7,
-	0.1, 2.4, 4.3, 5.3, 5.5, 4.9, 3.5, 3.0, 1.4, 0.3, -0.5, -1.4,
-
-	// 2 janvier
-	-1.3, -1.1, -1.3, -1.4, -1.4, -1.3, -1.9, -2.5, -2.7, -3.2, -2.6,
-	-2.0, 0.1, 2.6, 3.0, 4.5, 5.4, 5.4, 4.7, 4.6, 4.3, 3.1, 2.6, 1.9,
-
-	// 3 janvier
-	1.7, 1.5, 1.6, 1.4, 1.5, 0.8, 0.5, 0.4, 0.6, 0.1, -0.1, -0.5,
-	0.4, 2.0, 3.6, 3.9, 4.4, 4.3, 4.4, 3.8, 4.2, 3.8, 2.5, 2.0,
-
-	// 4 janvier
-	0.5, 1.5, 0.4, 0.5, 0.0, 0.5, 1.5, 1.4, 0.7, 0.9, 1.2, 1.5,
-	1.7, 2.3, 3.6, 3.9, 3.5, 3.4, 3.0, 2.7, 2.2, 2.2, 2.1, 2.3,
-
-	// 5 janvier
-	2.3, 2.3, 2.3, 2.3, 2.3, 2.5, 1.6, 1.8, 1.1, 0.7, 0.3, 0.3,
-	2.7, 4.2, 4.0, 4.7, 4.7, 4.3, 4.0, 3.6, 3.5, 3.1, 2.9, 2.9,
-
-	// 6 janvier 00h
-	2.7
-};
-
-int HUMIDITES[] =
-{
-	// 1er janvier
-	99, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-	95, 89, 76, 69, 68, 71, 75, 80, 87, 93, 95, 97,
-
-	// 2 janvier
-	97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97,
-	99, 93, 93, 91, 90, 91, 93, 95, 88, 95, 95, 95,
-
-	// 3 janvier
-	95, 95, 95, 95, 97, 97, 97, 97, 99, 99, 99, 99,
-	99, 97, 91, 89, 89, 84, 83, 84, 79, 79, 84, 87,
-
-	// 4 janvier
-	92, 91, 92, 90, 95, 92, 89, 91, 97, 97, 95, 95,
-	97, 93, 87, 83, 87, 87, 86, 87, 91, 91, 93, 91,
-
-	// 5 janvier
-	91, 91, 91, 91, 89, 87, 91, 89, 91, 93, 92, 92,
-	87, 80, 83, 79, 74, 75, 79, 80, 80, 83, 84, 82,
-
-	// 6 janvier 00h
-	84
-};
-
-
-float pointDeRosee(float temperature, int humidite)
-{
-	float a = 17.27;
-	float b = 237.7;
-
-	float alpha = (a * temperature) / (b + temperature) + std::log(humidite / 100.0);
-	float pdr = (b * alpha) / (a - alpha);
-
-	return pdr;
-}
-
-void temperaturesMinMax(int jour)
-{
-	int heureMinimale = 0;
-	int heureMaximale = 5 * 24;
-
-	std::cout << (jour + 1) << " janvier\n---------\n";
-
-	bool minimumDispo = true;
-	float minimum = TEMPERATURES[jour * 24];
-	for (int heure = jour * 24 - 6 ; heure <= jour * 24 + 18 ; heure++) {
-		if (heure < heureMinimale || heure > heureMaximale) {
-			minimumDispo = false;
-			break;
-		} else if (TEMPERATURES[heure] < minimum) {
-			minimum = TEMPERATURES[heure];
-		}
-	}
-	if (minimumDispo) {
-		std::cout << "min : " << minimum << "°C, ";
-	} else {
-		std::cout << "min : --°C, ";
-	}
-
-	bool maximumDispo = true;
-	float maximum = TEMPERATURES[jour * 24];
-	for (int heure = jour * 24 + 6 ; heure <= (jour + 1) * 24 + 6 ; heure++) {
-		if (heure < heureMinimale || heure > heureMaximale) {
-			maximumDispo = false;
-			break;
-		} else if (TEMPERATURES[heure] > maximum) {
-			maximum = TEMPERATURES[heure];
-		}
-	}
-	if (maximumDispo) {
-		std::cout << "max : " << maximum << "°C\n";
-	} else {
-		std::cout << "max : --°C\n";
-	}
-	std::cout << std::endl;
+/*
+ * Cette fonction vous permet d'afficher des dates et heures au format
+ * "16/03/2021 09:45:00" en faisant "std::cout << horodatage" où horodatage
+ * est du type time_point.
+ * Vous n'avez pas besoin de comprendre précisément comment elle fonctionne mais
+ * si vous êtes curieux : https://en.cppreference.com/w/cpp/io/manip/put_time.
+ *
+ * Pour pouvoir utiliser cette fonction, vous aurez sans doute besoin de la
+ * déplacer dans votre classe Note.
+ */
+auto affichageHorodatage(const std::chrono::system_clock::time_point& horodatage) {
+	std::time_t t = std::chrono::system_clock::to_time_t(horodatage);
+	return std::put_time(std::localtime(&t), "%F %T");
 }
 
 int main()
 {
-	temperaturesMinMax(3);
-	temperaturesMinMax(4);
+	/***** Exemple d'utilisation des dates et heures *****/
+	/* Voici comment connaître la date et heure courante.
+	 * Le type exact de time_point dépend de votre système d'exploitation et
+	 * de la précision de votre horloge. N'oubliez pas que vous pouvez
+	 * utiliser auto ou des alias de type, ou encore using namespace, pour
+	 * raccourcir un peu la taille des types.
+	 */
+	std::chrono::system_clock::time_point maintenant = std::chrono::system_clock::now();
+
+	// affichage avec la fonction définie plus haut
+	std::cout << affichageHorodatage(maintenant) << std::endl;
 
 
-	ReleveQuotidien releve4Janvier;
+	/***** Tests ******/
+	/* Les tests ci-dessous vous indiquent ce qui devrait fonctionner, vous
+	 * pouvez les décommenter au fur et à mesure. Vous pouvez bien sûr aussi
+	 * en ajouter. Notez que l'on utilise #if 0, #endif pour commenter des
+	 * portions de tests. Cette manière de faire permet de distinguer les
+	 * commentaires "de documentation" des commentaires "de désactivation".
+	 * Vous ne pouvez pas imbriquer les commentaires "slash-étoile" les uns
+	 * dans les autres, par contre, à l'intérieur de bloc #if, ils ne posent
+	 * pas de soucis. */
 
-	releve4Janvier.setDate("4 janvier 2021");
-	for (int h = 3 * 24 ; h < 4 * 24 ; h++) {
-		releve4Janvier.setMesure(h - 3*24, TEMPERATURES[h], HUMIDITES[h]);
-	}
-	for (int h = 2 * 24 + 18 ; h < 3 * 24 ; h++) {
-		releve4Janvier.setTemperatureVeille(h - 2*24, TEMPERATURES[h]);
-	}
-	for (int h = 4 * 24 ; h <= 4 * 24 + 6 ; h++) {
-		releve4Janvier.setTemperatureLendemain(h - 4*24, TEMPERATURES[h]);
-	}
+	// Q2.
+	/*
+	 * Au début de la question 2, aucun constructeur spécial n'a été
+	 * définie, le constructeur par défaut devrait donc être disponible.
+	 * Vous devrez changer cette ligne par la suite.
+	 */
+	Note n1;
+	n1.setTitre("Liste de courses");
+	if (n1.getTitre() != "Liste de courses")
+		std::cerr << "Soit setTitre(), soit getTitre() ne fonctionne pas" << std::endl;
 
-	std::cout << releve4Janvier << std::endl;
+	n1.ajouterContenu("Poireaux\n"); // \n : retour à la ligne
+	n1.ajouterContenu("Patates\n");
+	n1.viderContenu();
+	n1.ajouterContenu("Patates\n");
+	if (n1.getContenu() != "Patates\n")
+		std::cerr << "ajouterContenu(), viderContenu() ou getContenu() ne fonctionne pas" << std::endl;
+
+	// Q3.
+	/*
+	 * Vous disposez maintenant d'un constructeur approprié.
+	 * Notez au passage comment en C++, on peut facilement découper une
+	 * chaîne de caractères en plusieurs portions pour la faire tenir sur
+	 * plusieurs lignes : le compilateur rassemble automatiquement les
+	 * chaînes juxtaposées (il faut faire attention aux espaces à la fin des
+	 * lignes par contre).
+	 */
+	Note n2{"Journal de bord du capitaine",
+		"Starfleet Command nous a ordonné d'explorer les abords de la "
+		"zone neutre à la recherche de preuves d'activité de sabotage "
+		"organisés par les Romuliens."};
+	if (n2.getTitre() != "Journal de bord du capitaine")
+		std::cerr << "Le constructeur n'a pas l'air au point" << std::endl;
+
+	// Q4.
+	/*
+	 * Utilisez l'opérateur d'affichage nouvellement définie. Il doit
+	 * permettre une syntaxe pratique comme ci-dessous. Faites bien
+	 * attention aux types des arguments et de retour.
+	 */
+	std::cout << "Note n1\n" << n1 << "\n"
+		  << "Note n2\n" << n2 << std::endl;
+
+	// Et la suite ? Les tests vous donneraient un peu trop d'indices
+	// concernant les questions où l'on vous demande les types les plus
+	// appropriés pour les attributs et méthodes, vous devrez donc vous
+	// inspirer des tests ci-dessus pour écrire les vôtres pour les classes
+	// Categorie et PieceJointe.
+	//
+	Categorie categoriePrincipale("Racine");
+	categoriePrincipale.ajouterNote(&n1);
+	categoriePrincipale.ajouterNote(&n2);
+
+	Categorie sousCategorie("Courses", &categoriePrincipale);
+	sousCategorie.ajouterNote(&n1);
+
+	std::cout << "Categorie 1 : " << categoriePrincipale << std::endl;
+	std::cout << "Categorie 2 : " << sousCategorie << std::endl;
+
+
+	/************ Pièces-jointes ******/
+	Email emailDeStarfleetCommand("[TOP SECRET] Mission Xv4s5",
+		"Starfleet Command",
+		"Il se passe des choses pas nettes dans la zone neutre. Allez voir."
+	);
+	Photo photoDeVaisseauSuspect("La photo représente un vaisseau qui pourrait être romulien mais elle est très floue.");
+	n2.ajouterPieceJointe(&emailDeStarfleetCommand);
+	std::cout << n2 << std::endl;
+
+	n2.ajouterPieceJointe(&photoDeVaisseauSuspect);
+	std::cout << n2 << std::endl;
 }
+
