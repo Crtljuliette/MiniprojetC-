@@ -1,0 +1,27 @@
+Q1.
+
+La boucle "for (const char& s : line)" itère sur chaque caractère "s" de la
+chaîne de caractères "line".
+
+La fonction "toupper()" met en majuscules un caractère (et le laisse à
+l'identique s'il est déjà en majuscules).
+
+
+Q2.
+
+L'opération "- 'A'" sert à calculer le rang d'une lettre dans l'alphabet,
+c'est-à-dire son décalage par rapport à 'A'. L'opération "+ 'A'" fait l'inverse,
+elle calcule le caractère correspondant à son rang (0 -> A, 1 -> B, etc.).
+
+Ce "truc" fonctionne car le type "char" contenant les caractères est en fait un
+type numérique. D'après la table ASCII (American Standard Code for Information
+Interchange) utilisé par à peu près tous les systèmes informatiques, A=65, B=66,
+etc.).
+
+
+Q3.
+
+Le problème est que l'on fait correspondre à chaque lettre du message une lettre
+de la clé. Si le message est plus long que la clé, on déborde ! On peut corriger
+le problème en limitant la taille du message avant ou en bouclant sur les
+lettres de la clé lorsqu'on arrive au bout.
