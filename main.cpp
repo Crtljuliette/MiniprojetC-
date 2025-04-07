@@ -110,15 +110,20 @@ int main()
 
 
 	/************ Pièces-jointes ******/
-	Email emailDeStarfleetCommand("[TOP SECRET] Mission Xv4s5",
+	PieceJointe* emailDeStarfleetCommand = new Email("[TOP SECRET] Mission Xv4s5",
 		"Starfleet Command",
 		"Il se passe des choses pas nettes dans la zone neutre. Allez voir."
 	);
-	Photo photoDeVaisseauSuspect("La photo représente un vaisseau qui pourrait être romulien mais elle est très floue.");
-	n2.ajouterPieceJointe(&emailDeStarfleetCommand);
-	std::cout << n2 << std::endl;
+	PieceJointe* photoDeVaisseauSuspect = new Photo("La photo représente un vaisseau qui pourrait être romulien mais elle est très floue.");
+	n2.ajouterPieceJointe(emailDeStarfleetCommand);
+	std::cout << "affichage de la note n2\n"
+		  << "=======================\n"
+		  << n2 << std::endl;
 
-	n2.ajouterPieceJointe(&photoDeVaisseauSuspect);
-	std::cout << n2 << std::endl;
+	n2.ajouterPieceJointe(photoDeVaisseauSuspect);
+	std::cout << "affichage de la note n2\n"
+		  << "=======================\n"
+		  << n2 << std::endl;
+
 }
 

@@ -4,38 +4,37 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-#include <vector>
 
-class Categorie;
-class PieceJointe;
+#include "PieceJointe.h"
 
 class Note
 {
 private:
-	// Attributs :
-	std::string m_titre;
-	std::string m_contenu;
-	std::chrono::system_clock::time_point m_dateCreation;
-	std::vector<const PieceJointe*> m_piecesJointes;
-	Categorie m_categorie;
+	std::string titre;
+	std::string contenu;
+	std::chrono::system_clock::time_point horodatage;
+	static const int MAX_PIECES_JOINTES = 10;
+	PieceJointe* piecesJointes[MAX_PIECES_JOINTES];
 
 public:
-	// Méthodes :
-	Note(const Categorie& categorie, const std::string& titre, const std::string& contenu  = std::string{});
-	std::string getTitre() const;
-	void setTitre(const std::string&);
-	std::string getContenu() const;
-	void setContenu(const std::string&);
-	const std::chrono::system_clock::time_point getDate() const;
-	void ajouterPieceJointe(const PieceJointe* pieceJointe);
-
-friend std::ostream& operator<<(std::ostream& os, const Note& note);
+	Note(const std::string& t = "", const std::string& c = "");
+	Note(const Note& note);
+	Note(Note&& note);
+	~Note();
+	void operator=(const Note& n);
+	void operator=(Note&& n);
+	const std::string& getTitre() const;
+	const std::string& getContenu() const;
+	const std::chrono::system_clock::time_point getHorodatage() const;
+	auto affichageHorodatage() const;
+	void setTitre(const std::string& t);
+	void ajouterContenu(const std::string& c);
+	void viderContenu();
+	bool ajouterPieceJointe(PieceJointe* p);
+	int getNbPiecesJointes() const;
+	PieceJointe* getPieceJointe(int i) const;
 };
 
-std::ostream& operator<<(std::ostream& os, const Note& note);
+std::ostream& operator<<(std::ostream& os, const Note& n);
 
-
-// Les méthodes publiques et la surcharge de l'opérateur d'affichage constituent
-// l'interface de la classe.
-
-#endif
+#endif /* NOTE_H */

@@ -1,12 +1,13 @@
-#include <iostream>
+#ifndef PIECE_JOINTE_H
+#define PIECE_JOINTE_H
+
 #include <string>
 
 class PieceJointe
 {
-protected:
-	std::string fichier;
-
 public:
-	PieceJointe(const std::string& fichier);
-	~PieceJointe();
+	virtual const std::string& getTitre() const = 0;
+	virtual ~PieceJointe();
 };
+
+#endif

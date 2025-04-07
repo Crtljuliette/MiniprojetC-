@@ -1,29 +1,56 @@
 #include <string>
-#include <vector>
 
 #include "Categorie.h"
 
-Categorie::Categorie(const std::string& n) :
-	m_nom{n},
-	m_parente{nullptr}
-{}
+const int Categorie::MAX_NOTES;
 
-const Categorie* getCategorieParente()
+Categorie::Categorie(const std::string& n, Categorie* p) :
+	nom{n},
+	parente{p}
 {
-	return m_parente;
+	for (int i=0 ; i<MAX_NOTES ; i++) {
+		notes[i] = nullptr;
+	}
 }
 
-void Categorie::ajouterNote(const Note* note)
+const std::string& Categorie::getNom() const
 {
-	m_notes.push_back(note);
-}
-
-std::string Categorie::getNom() const
-{
-	return m_nom;
+	return nom;
 }
 
 void Categorie::setNom(const std::string& n)
 {
-	m_nom = n;
+	nom = n;
+}
+
+Categorie* Categorie::getParente() const
+{
+	return parente;
+}
+
+bool Categorie::ajouterNote(Note* n)
+{
+	// on parcourt le tableau jusqu'à trouver une case vide, s'il n'y en a
+	// pas, on renvoie false
+	bool ret = false;
+	for (int i=0 ; i<Categorie::MAX_NOTES ; i++) {
+		if (notes[i] == nullptr) {
+			ret = true;
+			notes[i] = n;
+			break;
+		}
+	}
+	return ret;
+}
+
+std::ostream& operator<<(std::ostream& os, const Categorie& cat)
+{
+	os << cat.nom << "\n";
+	for (int i=0 ; i<Categorie::MAX_NOTES ; i++) {
+		// Attention, on ne doit jamais déréférencer un pointeur nul !
+		if (cat.notes[i] != nullptr) {
+			os << (*cat.notes[i]) << "\n";
+		}
+	}
+	return os;
 }
